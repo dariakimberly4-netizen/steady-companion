@@ -1,0 +1,10 @@
+{
+  "name": "Steady Companion",
+  "short_name": "Steady",
+  "description": "A Parkinson's-friendly daily care companion.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffdf8",
+  "theme_color": "#18213f",
+  "icons": []
+}

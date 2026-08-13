@@ -12,11 +12,27 @@
   </style>
 </head>
 <body>
+  <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <div class="logo" aria-hidden="true">✦</div>
+      <h1>Steady Companion</h1>
+      <p>Private daily care for people with Parkinson’s and their caregivers.</p>
+      <div class="auth-tabs"><button id="showLogin" class="secondary">Log in</button><button id="showSignup" class="ghost">Create account</button></div>
+      <form id="authForm" class="form">
+        <div id="nameField" class="field" hidden><label for="authName">Your name</label><input id="authName" autocomplete="name"></div>
+        <div id="roleField" class="field" hidden><label for="authRole">I am a</label><select id="authRole"><option value="patient">Person with Parkinson’s</option><option value="caregiver">Caregiver</option></select></div>
+        <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" minlength="6" autocomplete="current-password" required></div>
+        <button id="authSubmit" class="primary" type="submit">Log in</button>
+      </form>
+      <p id="authMessage" class="small muted" role="status"></p>
+    </div>
+  </div>
   <div id="offline" class="offline">You are offline. New entries will stay on this device.</div>
-  <header class="top"><div class="brand"><div class="logo" aria-hidden="true">✦</div><div><h1>Steady Companion</h1><p>Daily care, made gentler</p></div></div><div class="date" id="headerDate"></div></header>
+  <header class="top"><div class="brand"><div class="logo" aria-hidden="true">✦</div><div><h1>Steady Companion</h1><p id="accountLabel">Daily care, made gentler</p></div></div><div style="display:flex;align-items:center;gap:10px"><div class="date" id="headerDate"></div><button id="signOut" class="ghost small">Log out</button></div></header>
   <main class="shell">
     <section id="home" class="view active" aria-labelledby="homeTitle">
-      <div class="hero"><h2 id="homeTitle">Good day, Kimmy</h2><p>One step at a time. Here is what matters now.</p></div>
+      <div class="hero"><h2 id="homeTitle">Good day</h2><p>One step at a time. Here is what matters now.</p></div>
       <div class="grid"><div>
         <article class="card next"><div class="eyebrow" style="color:#e9ce91">Next medicine</div><div class="time" id="nextTime">—</div><h3 id="nextName">No medicine scheduled</h3><p class="muted" id="nextDetails">Add your first medicine to begin.</p><button id="takeNow" class="primary" style="margin-top:18px" disabled>Mark as taken</button><div class="actions"><button id="snooze" class="secondary" disabled>Snooze</button><button id="skipDose" class="ghost" disabled>Skip</button></div></article>
         <article class="card"><div class="eyebrow">Quick check-in</div><h3>How are you now?</h3><p class="muted">Choose one. No typing needed.</p><div class="state-grid"><button class="state" data-state="ON">ON</button><button class="state" data-state="OFF">OFF</button><button class="state" data-state="Dyskinesia">Dyskinesia</button><button class="state" data-state="Unsure">Unsure</button></div></article>
@@ -30,9 +46,9 @@
 
     <section id="track" class="view" aria-labelledby="trackTitle"><div class="hero"><h2 id="trackTitle">Track how you feel</h2><p>Simple notes for you, your caregiver, and your doctor.</p></div><article class="card"><h3>Quick check-in</h3><div class="state-grid"><button class="state" data-state="ON">ON</button><button class="state" data-state="OFF">OFF</button><button class="state" data-state="Dyskinesia">Dyskinesia</button><button class="state" data-state="Unsure">Unsure</button></div><button class="secondary" style="width:100%;margin-top:12px" data-open="symptomModal">Add symptoms or note</button></article><article class="card"><h3>Recent check-ins</h3><div id="checkinList" class="empty">No check-ins yet.</div></article></section>
 
-    <section id="care" class="view" aria-labelledby="careTitle"><div class="hero"><h2 id="careTitle">Care</h2><p>DBS, caregiver, and emergency information.</p></div><article class="card"><h3>DBS charging</h3><div id="dbsPanel" class="muted">No charging history.</div><button class="secondary" style="width:100%;margin-top:14px" data-open="dbsModal">Start or record charging</button></article><article class="card"><h3>Care circle</h3><div id="caregiverDisplay" class="muted">No caregiver saved on this device.</div><button class="secondary" style="width:100%;margin-top:14px" data-open="caregiverModal">Add caregiver details</button></article><article class="card"><h3>Emergency card</h3><p class="muted">Keep essential information ready on this device.</p><button class="secondary" style="width:100%" data-open="emergencyModal">Set up emergency card</button><div id="emergencyDisplay" style="margin-top:14px"></div></article></section>
+    <section id="care" class="view" aria-labelledby="careTitle"><div class="hero"><h2 id="careTitle">Care</h2><p>DBS, caregiver, and emergency information.</p></div><article class="card"><h3>DBS charging</h3><div id="dbsPanel" class="muted">No charging history.</div><button class="secondary" style="width:100%;margin-top:14px" data-open="dbsModal">Start or record charging</button></article><article class="card"><h3>Care circle</h3><div id="caregiverDisplay" class="muted">Loading care circle…</div><button id="caregiverAction" class="secondary" style="width:100%;margin-top:14px" data-open="caregiverModal">Invite a caregiver</button></article><article class="card"><h3>Emergency card</h3><p class="muted">Your emergency information is available to connected caregivers.</p><button class="secondary" style="width:100%" data-open="emergencyModal">Set up emergency card</button><div id="emergencyDisplay" style="margin-top:14px"></div></article></section>
 
-    <section id="reports" class="view" aria-labelledby="reportTitle"><div class="hero"><h2 id="reportTitle">Reports</h2><p>Review your recent records before an appointment.</p></div><article class="card"><h3>Summary</h3><div class="metric"><div><strong id="rTaken">0</strong><span class="small">Doses taken</span></div><div><strong id="rChecks">0</strong><span class="small">Check-ins</span></div></div><div id="reportDetail" style="margin-top:18px"></div><div class="actions"><button class="secondary" id="copyReport">Copy report</button><button class="ghost" id="printReport">Print</button></div></article><article class="card"><h3>Privacy</h3><p class="muted small">Your data stays in this browser in this first version. It is not medical advice and does not replace your care team.</p><button class="ghost danger" id="clearData">Clear device data</button></article></section>
+    <section id="reports" class="view" aria-labelledby="reportTitle"><div class="hero"><h2 id="reportTitle">Reports</h2><p>Review your recent records before an appointment.</p></div><article class="card"><h3>Summary</h3><div class="metric"><div><strong id="rTaken">0</strong><span class="small">Doses taken</span></div><div><strong id="rChecks">0</strong><span class="small">Check-ins</span></div></div><div id="reportDetail" style="margin-top:18px"></div><div class="actions"><button class="secondary" id="copyReport">Copy report</button><button class="ghost" id="printReport">Print</button></div></article><article class="card"><h3>Privacy</h3><p class="muted small">Your records are stored securely in your private account and shared only with caregivers you connect. This app is not medical advice.</p><button class="ghost danger" id="clearData">Clear my records</button></article></section>
   </main>
 
   <nav class="nav" aria-label="Main navigation"><div class="nav-inner"><button class="tab active" data-view="home"><span>⌂</span>Home</button><button class="tab" data-view="medicines"><span>◉</span>Medicines</button><button class="tab" data-view="track"><span>♡</span>Track</button><button class="tab" data-view="care"><span>✦</span>Care</button><button class="tab" data-view="reports"><span>▤</span>Reports</button></div></nav>
@@ -40,17 +56,53 @@
   <div id="medModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="medModalTitle"><div class="sheet"><div class="sheet-head"><h2 id="medModalTitle">Add medicine</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><form id="medForm" class="form"><div class="field"><label for="medName">Medicine name</label><input id="medName" required placeholder="Example: Levodopa" /></div><div class="field"><label for="medDose">Dose or instruction</label><input id="medDose" placeholder="Example: ½ tablet" /></div><div class="field"><label for="medTime">Time</label><input id="medTime" type="time" required /></div><button class="primary" type="submit">Save medicine</button></form></div></div>
   <div id="symptomModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="symptomTitle"><div class="sheet"><div class="sheet-head"><h2 id="symptomTitle">Add symptoms</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><form id="symptomForm" class="form"><div class="field"><label for="symptoms">Symptoms</label><select id="symptoms"><option>Tremor</option><option>Rigidity</option><option>Slowness</option><option>Fatigue</option><option>Balance</option><option>Freezing</option><option>Speech</option><option>Other</option></select></div><div class="field"><label for="severity">Severity</label><select id="severity"><option>Mild</option><option>Moderate</option><option>Severe</option></select></div><div class="field"><label for="symptomNote">Optional note</label><textarea id="symptomNote" placeholder="Short note"></textarea></div><button class="primary" type="submit">Save check-in</button></form></div></div>
   <div id="dbsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="dbsTitle"><div class="sheet"><div class="sheet-head"><h2 id="dbsTitle">DBS charging</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><div class="charging"><div class="small">Current session</div><div id="chargeTimer" class="timer">00:00</div></div><div class="actions"><button id="startCharge" class="primary">Start</button><button id="finishCharge" class="secondary" disabled>Complete</button></div><div id="dbsHistory" style="margin-top:18px"></div></div></div>
-  <div id="caregiverModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="caregiverTitle"><div class="sheet"><div class="sheet-head"><h2 id="caregiverTitle">Caregiver details</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><form id="caregiverForm" class="form"><div class="field"><label for="cgName">Name</label><input id="cgName" required /></div><div class="field"><label for="cgPhone">Phone or email</label><input id="cgPhone" /></div><button class="primary" type="submit">Save caregiver</button></form></div></div>
+  <div id="caregiverModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="caregiverTitle"><div class="sheet"><div class="sheet-head"><h2 id="caregiverTitle">Caregiver invitation</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><form id="caregiverForm" class="form"><div class="field"><label for="cgEmail">Caregiver email</label><input id="cgEmail" type="email" required placeholder="caregiver@example.com" /></div><p class="small muted">They must create a caregiver account using this same email.</p><button class="primary" type="submit">Create invitation</button></form><div id="pendingInvites"></div></div></div>
   <div id="emergencyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="emergencyTitle"><div class="sheet"><div class="sheet-head"><h2 id="emergencyTitle">Emergency card</h2><button class="iconbtn" data-close aria-label="Close">×</button></div><form id="emergencyForm" class="form"><div class="field"><label for="emName">Full name</label><input id="emName" /></div><div class="field"><label for="emContact">Emergency contact</label><input id="emContact" /></div><div class="field"><label for="emNotes">Allergies or important notes</label><textarea id="emNotes"></textarea></div><button class="primary" type="submit">Save emergency card</button></form></div></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.56.1/dist/umd/supabase.js"></script>
+  <style>.auth-gate{position:fixed;inset:0;z-index:100;background:linear-gradient(145deg,#111a43,#56378d);display:flex;align-items:center;justify-content:center;padding:18px}.auth-gate.hidden{display:none}.auth-card{width:min(470px,100%);background:#fffdf7;border-radius:26px;padding:28px;box-shadow:0 22px 70px #090e29aa}.auth-card h1{color:#111a43;margin:14px 0 5px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.auth-tabs button{width:100%}body.auth-pending>header,body.auth-pending>main,body.auth-pending>nav{visibility:hidden}</style>
   <script>
-    const KEY='steady-companion-v1';
+    const SUPABASE_URL='https://nrdmakgigcixmzhxthrh.supabase.co';
+    const SUPABASE_KEY='sb_publishable_OhoPpv-hRk56QGy3PZJSBQ_W72oHkq1';
+    const cloud=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const KEY='steady-companion-v2';
     const defaults={medicines:[],doses:[],checkins:[],dbs:[],caregiver:null,emergency:null,chargeStart:null};
-    let data={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')};
+    let data={...defaults},currentUser=null,profile=null,patientId=null,authMode='login',saveTimer;
     let selectedState='Unsure',timerId;
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-    const save=()=>{localStorage.setItem(KEY,JSON.stringify(data));render()};
+    const localKey=()=>KEY+'-'+(patientId||'guest');
+    const save=()=>{localStorage.setItem(localKey(),JSON.stringify(data));render();clearTimeout(saveTimer);if(currentUser&&patientId)saveTimer=setTimeout(syncToCloud,350)};
+    async function syncToCloud(){
+      const {error}=await cloud.from('patient_records').upsert({patient_id:patientId,data,updated_at:new Date().toISOString()},{onConflict:'patient_id'});
+      if(error)toast('Saved on this device; cloud sync will retry');
+    }
+    async function ensureProfile(){
+      let {data:p}=await cloud.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+      if(!p){const meta=currentUser.user_metadata||{};const role=meta.role==='caregiver'?'caregiver':'patient';const name=meta.display_name||currentUser.email.split('@')[0];await cloud.from('profiles').insert({id:currentUser.id,full_name:name,role});({data:p}=await cloud.from('profiles').select('*').eq('id',currentUser.id).single())}
+      profile=p;
+    }
+    async function choosePatient(){
+      patientId=currentUser.id;
+      if(profile.role==='caregiver'){
+        const {data:links}=await cloud.from('patient_caregivers').select('patient_id').eq('caregiver_id',currentUser.id).limit(1);
+        if(links?.length)patientId=links[0].patient_id;
+      }
+    }
+    async function loadCloudData(){
+      const cached=JSON.parse(localStorage.getItem(localKey())||'{}');
+      data={...defaults,...cached};
+      const {data:row}=await cloud.from('patient_records').select('data').eq('patient_id',patientId).maybeSingle();
+      if(row?.data)data={...defaults,...row.data};else if(profile.role==='patient')await syncToCloud();
+      localStorage.setItem(localKey(),JSON.stringify(data));render();
+    }
+    async function boot(user){
+      currentUser=user;await ensureProfile();await choosePatient();await loadCloudData();
+      $('#authGate').classList.add('hidden');document.body.classList.remove('auth-pending');
+      $('#homeTitle').textContent='Good day, '+profile.full_name;
+      $('#accountLabel').textContent=profile.role==='caregiver'?'Caregiver view':'Private patient account';
+      await renderCareCircle();
+    }
     const nowLabel=(d=new Date())=>d.toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
     const todayKey=()=>new Date().toISOString().slice(0,10);
     function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400)}
@@ -64,12 +116,38 @@
       $('#doseHistory').innerHTML=data.doses.length?data.doses.slice(0,10).map(d=>`<div class="row"><div><strong>${escapeHtml(d.name)}</strong><div class="muted small">${nowLabel(new Date(d.at))}</div></div><span class="pill">${d.status}</span></div>`).join(''):'<div class="empty">No dose activity yet.</div>';
       $('#checkinList').innerHTML=data.checkins.length?data.checkins.slice(0,12).map(c=>`<div class="row"><div><strong>${escapeHtml(c.state)}</strong><div class="muted small">${escapeHtml([c.symptom,c.severity,c.note].filter(Boolean).join(' · '))||'Quick check-in'}</div></div><span class="small muted">${nowLabel(new Date(c.at))}</span></div>`).join(''):'<div class="empty">No check-ins yet.</div>';
       const last=data.dbs[0];const dbsText=last?`Last charge: ${nowLabel(new Date(last.end))} · ${last.minutes} min`:'No charging session recorded.';$('#dbsSummary').textContent=dbsText;$('#dbsPanel').textContent=dbsText;$('#dbsHistory').innerHTML=data.dbs.length?data.dbs.slice(0,5).map(x=>`<div class="row"><div>Charging completed</div><span class="small muted">${x.minutes} min · ${nowLabel(new Date(x.end))}</span></div>`).join(''):'<div class="empty">No charging history.</div>';
-      $('#caregiverDisplay').innerHTML=data.caregiver?`<strong>${escapeHtml(data.caregiver.name)}</strong><div class="muted">${escapeHtml(data.caregiver.contact||'No contact saved')}</div>`:'No caregiver saved on this device.';
       $('#emergencyDisplay').innerHTML=data.emergency?`<div class="charging"><strong>${escapeHtml(data.emergency.name||'Emergency card')}</strong><div>${escapeHtml(data.emergency.contact||'')}</div><div class="small muted">${escapeHtml(data.emergency.notes||'')}</div></div>`:'';
       const taken=data.doses.filter(d=>d.status==='Taken'&&d.at.slice(0,10)===todayKey()).length, checks=data.checkins.filter(c=>c.at.slice(0,10)===todayKey()).length;$('#takenCount').textContent=$('#rTaken').textContent=taken;$('#checkCount').textContent=$('#rChecks').textContent=checks;
       const states=data.checkins.reduce((a,c)=>(a[c.state]=(a[c.state]||0)+1,a),{});$('#reportDetail').innerHTML=`<div class="row"><span>Most recent state</span><strong>${data.checkins[0]?.state||'Not recorded'}</strong></div><div class="row"><span>Total medicines</span><strong>${data.medicines.length}</strong></div><div class="row"><span>DBS sessions</span><strong>${data.dbs.length}</strong></div>`;
       updateTimer();
     }
+    async function renderCareCircle(){
+      if(!profile)return;
+      if(profile.role==='patient'){
+        $('#caregiverAction').textContent='Invite a caregiver';$('#caregiverForm').hidden=false;
+        const {data:links}=await cloud.from('patient_caregivers').select('caregiver_id').eq('patient_id',currentUser.id);
+        const ids=(links||[]).map(x=>x.caregiver_id);let names=[];
+        if(ids.length){const {data:people}=await cloud.from('profiles').select('full_name').in('id',ids);names=(people||[]).map(x=>x.full_name)}
+        $('#caregiverDisplay').innerHTML=names.length?names.map(n=>`<div class="row"><strong>${escapeHtml(n)}</strong><span class="pill">Connected</span></div>`).join(''):'No caregiver connected yet.';
+        const {data:invites}=await cloud.from('caregiver_invitations').select('*').eq('patient_id',currentUser.id).order('created_at',{ascending:false});
+        $('#pendingInvites').innerHTML=(invites||[]).length?'<h3>Invitations</h3>'+invites.map(i=>`<div class="row"><span>${escapeHtml(i.caregiver_email)}</span><span class="pill">${escapeHtml(i.status)}</span></div>`).join(''):'';
+      }else{
+        $('#caregiverAction').textContent='View invitations';$('#caregiverForm').hidden=true;
+        const {data:links}=await cloud.from('patient_caregivers').select('patient_id').eq('caregiver_id',currentUser.id);
+        const ids=(links||[]).map(x=>x.patient_id);let people=[];
+        if(ids.length){const r=await cloud.from('profiles').select('id,full_name').in('id',ids);people=r.data||[]}
+        $('#caregiverDisplay').innerHTML=people.length?people.map(p=>`<div class="row"><strong>${escapeHtml(p.full_name)}</strong><button class="secondary small" onclick="switchPatient('${p.id}')">Open</button></div>`).join(''):'No patient connected yet.';
+        const {data:invites}=await cloud.from('caregiver_invitations').select('*').eq('caregiver_email',currentUser.email.toLowerCase()).eq('status','pending');
+        $('#pendingInvites').innerHTML=(invites||[]).length?'<h3>Pending invitations</h3>'+invites.map(i=>`<button class="primary" style="width:100%;margin:8px 0" onclick="acceptInvite('${i.id}','${i.patient_id}')">Accept invitation</button>`).join(''):'<div class="empty">No pending invitations.</div>';
+      }
+    }
+    window.switchPatient=async id=>{patientId=id;await loadCloudData();closeModals();toast('Patient record opened')};
+    window.acceptInvite=async(id,pid)=>{
+      const {error}=await cloud.from('patient_caregivers').insert({patient_id:pid,caregiver_id:currentUser.id});
+      if(error)return toast(error.message);
+      await cloud.from('caregiver_invitations').update({status:'accepted',accepted_at:new Date().toISOString()}).eq('id',id);
+      patientId=pid;await loadCloudData();await renderCareCircle();closeModals();toast('Caregiver access connected');
+    };
     function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
     window.removeMedicine=id=>{data.medicines=data.medicines.filter(m=>m.id!==id);save();toast('Medicine removed')};
     $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab,.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.view).classList.add('active');scrollTo({top:0,behavior:'smooth'})});
@@ -79,15 +157,23 @@
     function recordDose(status){const m=nextMedicine();if(!m)return;data.doses.unshift({id:crypto.randomUUID(),medicineId:m.id,name:m.name,status,at:new Date().toISOString()});save();toast('Dose recorded as '+status.toLowerCase())}
     $('#takeNow').onclick=()=>recordDose('Taken');$('#skipDose').onclick=()=>recordDose('Skipped');$('#snooze').onclick=()=>toast('Reminder snoozed for 10 minutes');
     $('#symptomForm').onsubmit=e=>{e.preventDefault();addCheckin(selectedState,$('#symptomNote').value.trim(),$('#symptoms').value,$('#severity').value);e.target.reset();closeModals()};
-    $('#caregiverForm').onsubmit=e=>{e.preventDefault();data.caregiver={name:$('#cgName').value.trim(),contact:$('#cgPhone').value.trim()};closeModals();save();toast('Caregiver details saved')};
+    $('#caregiverForm').onsubmit=async e=>{e.preventDefault();const email=$('#cgEmail').value.trim().toLowerCase();const {error}=await cloud.from('caregiver_invitations').insert({patient_id:currentUser.id,caregiver_email:email});if(error)return toast(error.message);e.target.reset();await renderCareCircle();toast('Invitation created. Ask them to sign up with this email')};
     $('#emergencyForm').onsubmit=e=>{e.preventDefault();data.emergency={name:$('#emName').value.trim(),contact:$('#emContact').value.trim(),notes:$('#emNotes').value.trim()};closeModals();save();toast('Emergency card saved')};
-    $('#startCharge').onclick=()=>{if(!data.chargeStart)data.chargeStart=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));$('#startCharge').disabled=true;$('#finishCharge').disabled=false;clearInterval(timerId);timerId=setInterval(updateTimer,1000);updateTimer()};
+    $('#startCharge').onclick=()=>{if(!data.chargeStart)data.chargeStart=new Date().toISOString();localStorage.setItem(localKey(),JSON.stringify(data));$('#startCharge').disabled=true;$('#finishCharge').disabled=false;clearInterval(timerId);timerId=setInterval(updateTimer,1000);updateTimer()};
     $('#finishCharge').onclick=()=>{if(!data.chargeStart)return;const end=new Date(),mins=Math.max(1,Math.round((end-new Date(data.chargeStart))/60000));data.dbs.unshift({start:data.chargeStart,end:end.toISOString(),minutes:mins});data.chargeStart=null;clearInterval(timerId);save();toast('DBS charging recorded')};
     function updateTimer(){if(data.chargeStart){const secs=Math.floor((Date.now()-new Date(data.chargeStart))/1000),m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0');$('#chargeTimer').textContent=m+':'+s;$('#startCharge').disabled=true;$('#finishCharge').disabled=false}else{$('#chargeTimer').textContent='00:00';$('#startCharge').disabled=false;$('#finishCharge').disabled=true}}
     function reportText(){return `STEADY COMPANION REPORT\nGenerated: ${new Date().toLocaleString()}\n\nMedicines: ${data.medicines.length}\nDoses taken today: ${$('#rTaken').textContent}\nCheck-ins today: ${$('#rChecks').textContent}\nRecent state: ${data.checkins[0]?.state||'Not recorded'}\nDBS sessions: ${data.dbs.length}\n\nPatient-entered information. Not medical advice.`}
-    $('#copyReport').onclick=async()=>{await navigator.clipboard.writeText(reportText());toast('Report copied')};$('#printReport').onclick=()=>window.print();$('#clearData').onclick=()=>{if(confirm('Clear all Steady Companion data from this device?')){data={...defaults};localStorage.removeItem(KEY);render();toast('Device data cleared')}};
+    $('#copyReport').onclick=async()=>{await navigator.clipboard.writeText(reportText());toast('Report copied')};$('#printReport').onclick=()=>window.print();$('#clearData').onclick=()=>{if(confirm('Clear all records in this account?')){data={...defaults};localStorage.removeItem(localKey());save();toast('Records cleared')}};
     function connection(){const off=!navigator.onLine;$('#offline').classList.toggle('show',off)}addEventListener('online',connection);addEventListener('offline',connection);connection();
-    $('#headerDate').textContent=new Date().toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'});render();if(data.chargeStart)timerId=setInterval(updateTimer,1000);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
+    function setAuthMode(mode){authMode=mode;const signup=mode==='signup';$('#nameField').hidden=$('#roleField').hidden=!signup;$('#authSubmit').textContent=signup?'Create account':'Log in';$('#showLogin').className=signup?'ghost':'secondary';$('#showSignup').className=signup?'secondary':'ghost';$('#authMessage').textContent=''}
+    $('#showLogin').onclick=()=>setAuthMode('login');$('#showSignup').onclick=()=>setAuthMode('signup');
+    $('#authForm').onsubmit=async e=>{e.preventDefault();$('#authSubmit').disabled=true;$('#authMessage').textContent='Please wait…';const email=$('#authEmail').value.trim(),password=$('#authPassword').value;let result;if(authMode==='signup'){result=await cloud.auth.signUp({email,password,options:{data:{display_name:$('#authName').value.trim()||email.split('@')[0],role:$('#authRole').value},emailRedirectTo:location.origin+location.pathname}})}else result=await cloud.auth.signInWithPassword({email,password});$('#authSubmit').disabled=false;if(result.error)return $('#authMessage').textContent=result.error.message;if(result.data.session)await boot(result.data.user);else $('#authMessage').textContent='Account created. Check your email, then log in.'};
+    $('#signOut').onclick=async()=>{await cloud.auth.signOut();location.reload()};
+    document.body.classList.add('auth-pending');
+    $('#headerDate').textContent=new Date().toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'});render();
+    cloud.auth.getSession().then(({data:{session}})=>{if(session)boot(session.user)});
+    cloud.auth.onAuthStateChange((event,session)=>{if(session&&event==='SIGNED_IN'&&!currentUser)boot(session.user)});
+    if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
   </script>
 </body>
 </html>

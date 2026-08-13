@@ -2,19 +2,22 @@
 
 A mobile-first, Parkinson's-friendly daily care companion.
 
-## Included in this first version
+## Included
 
 - Medication schedules and dose outcomes
 - ON/OFF and symptom check-ins
 - DBS charging timer and history
+- Secure email-and-password accounts
+- Separate private records for every user
+- Caregiver invitations and shared patient access
 - Caregiver and emergency information
 - Simple printable reports
-- Offline support and device-local storage
+- Secure Supabase cloud sync with an offline device cache
 - Large touch targets, plain language, and reduced typing
 
 ## Privacy and medical safety
 
-This first version stores information only in the user's browser using local storage. It is a tracking and reminder tool, not a diagnostic device, emergency service, or replacement for professional medical care.
+Records are protected by Supabase authentication and row-level security. Users share access only through caregiver invitations. The app is a tracking and reminder tool, not a diagnostic device, emergency service, or replacement for professional medical care.
 
 ## GitHub Pages
 

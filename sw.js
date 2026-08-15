@@ -1,4 +1,4 @@
-const CACHE='steady-companion-v5';
+const CACHE='steady-companion-v6';
 const CORE=['./','./index.html','./manifest.webmanifest','./flexible-medicine.js'];
 
 self.addEventListener('install',event=>{

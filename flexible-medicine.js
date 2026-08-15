@@ -39,6 +39,50 @@
     }
   }
 
+  function setupCaregiverEmailInvite() {
+    const form = document.getElementById('caregiverForm');
+    if (!form || form.dataset.emailInviteHandler) return;
+    form.dataset.emailInviteHandler = 'true';
+
+    const submit = form.querySelector('button[type="submit"]');
+    if (submit) submit.textContent = 'Send email invitation';
+
+    const helper = form.querySelector('p.small.muted');
+    if (helper) helper.textContent = 'We will email your caregiver a secure invitation to Steady Companion.';
+
+    form.onsubmit = async e => {
+      e.preventDefault();
+      const email = document.getElementById('cgEmail').value.trim().toLowerCase();
+      if (!email) return;
+
+      const button = form.querySelector('button[type="submit"]');
+      const oldText = button?.textContent || 'Send email invitation';
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Sending…';
+      }
+
+      try {
+        const { data: result, error } = await cloud.functions.invoke('invite-caregiver', {
+          body: { email }
+        });
+        if (error) throw error;
+        form.reset();
+        await renderCareCircle();
+        toast(result?.message || `Invitation email sent to ${email}`);
+        closeModals();
+      } catch (err) {
+        console.error('Caregiver invitation email failed', err);
+        toast(err?.message || 'Could not send invitation email. Please try again.');
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = oldText;
+        }
+      }
+    };
+  }
+
   function applyAnytimeLabels() {
     const nextTime = document.getElementById('nextTime');
     if (nextTime && data?.medicines?.length && nextTime.textContent !== 'No specific time') {
@@ -80,11 +124,13 @@
   }
 
   setAnytimeForm();
+  setupCaregiverEmailInvite();
   migrateUntimedMedicines();
   applyAnytimeLabels();
 
   const observer = new MutationObserver(() => {
     setAnytimeForm();
+    setupCaregiverEmailInvite();
     applyAnytimeLabels();
   });
   observer.observe(document.body, { childList: true, subtree: true, characterData: true });

@@ -83,6 +83,40 @@
     };
   }
 
+  function setupOnOffTime() {
+    document.querySelectorAll('.state[data-state="ON"], .state[data-state="OFF"]').forEach(button => {
+      const state = button.dataset.state;
+      button.innerHTML = `${state}<br><span class="small">Tap to record current time</span>`;
+    });
+
+    document.querySelectorAll('.state-grid').forEach(grid => {
+      const card = grid.closest('.card');
+      if (!card || card.querySelector('.onoff-time-summary')) return;
+
+      const summary = document.createElement('div');
+      summary.className = 'charging onoff-time-summary';
+      summary.style.marginTop = '12px';
+      summary.style.marginBottom = '4px';
+      summary.style.padding = '13px 15px';
+      grid.before(summary);
+    });
+
+    const latest = Array.isArray(data?.checkins)
+      ? data.checkins.find(c => c.state === 'ON' || c.state === 'OFF')
+      : null;
+
+    document.querySelectorAll('.onoff-time-summary').forEach(summary => {
+      if (!latest) {
+        summary.innerHTML = '<strong>ON/OFF time</strong><div class="small muted">Tap ON or OFF. The exact time will be recorded automatically.</div>';
+        return;
+      }
+
+      const time = new Date(latest.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      const date = new Date(latest.at).toLocaleDateString([], { month: 'short', day: 'numeric' });
+      summary.innerHTML = `<strong>Latest: ${latest.state} at ${time}</strong><div class="small muted">${date} · recorded automatically</div>`;
+    });
+  }
+
   function applyAnytimeLabels() {
     const nextTime = document.getElementById('nextTime');
     if (nextTime && data?.medicines?.length && nextTime.textContent !== 'No specific time') {
@@ -125,12 +159,14 @@
 
   setAnytimeForm();
   setupCaregiverEmailInvite();
+  setupOnOffTime();
   migrateUntimedMedicines();
   applyAnytimeLabels();
 
   const observer = new MutationObserver(() => {
     setAnytimeForm();
     setupCaregiverEmailInvite();
+    setupOnOffTime();
     applyAnytimeLabels();
   });
   observer.observe(document.body, { childList: true, subtree: true, characterData: true });

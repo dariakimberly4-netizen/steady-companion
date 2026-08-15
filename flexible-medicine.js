@@ -117,6 +117,16 @@
     });
   }
 
+  function removeVisibleHistory() {
+    const doseHistory = document.getElementById('doseHistory');
+    const doseCard = doseHistory?.closest('.card');
+    if (doseCard) doseCard.style.display = 'none';
+
+    const checkinList = document.getElementById('checkinList');
+    const checkinCard = checkinList?.closest('.card');
+    if (checkinCard) checkinCard.style.display = 'none';
+  }
+
   function applyAnytimeLabels() {
     const nextTime = document.getElementById('nextTime');
     if (nextTime && data?.medicines?.length && nextTime.textContent !== 'No specific time') {
@@ -160,6 +170,7 @@
   setAnytimeForm();
   setupCaregiverEmailInvite();
   setupOnOffTime();
+  removeVisibleHistory();
   migrateUntimedMedicines();
   applyAnytimeLabels();
 
@@ -167,6 +178,7 @@
     setAnytimeForm();
     setupCaregiverEmailInvite();
     setupOnOffTime();
+    removeVisibleHistory();
     applyAnytimeLabels();
   });
   observer.observe(document.body, { childList: true, subtree: true, characterData: true });
